@@ -4,19 +4,19 @@ Welcome to the **Calabria Renewables** platform, a comprehensive web application
 
 ## 🚀 Key Features
 
-*   **Interactive Dashboard**: Real-time visualization of environmental metrics with dynamic statistics and interactive maps.
+*   **Interactive Dashboard**: Real-time visualisation of environmental metrics with dynamic statistics and interactive maps.
 *   **Campaign Management**: 
     *   Create, update, and delete monitoring campaigns.
     *   **Robust Identification**: Uses a composite key (Name, Latitude, Longitude, Measurement Instrument) to uniquely identify campaigns.
     *   **Auto-Append**: Intelligently appends new file uploads to existing campaigns if headers and composite keys match, streamlining data ingestion.
 *   **Data Processing Pipeline**:
     *   Supports upload of `.csv`, `.xlsx`, `.xls`, and `.ods` files.
-    *   **Iterative Processing**: Efficiently handles large `.ods` files using iterative, chunk-based conversion strategies to minimize memory overhead.
+    *   **Iterative Processing**: Efficiently handles large `.ods` files using iterative, chunk-based conversion strategies to minimise memory overhead.
     *   **Intelligent Parsing**: Automatically detects "Timestamp" columns for time-series alignment.
-    *   **Python Integration**: Uses dedicated Python scripts (`convert_to_csv.py`, `impute_data.py`) for robust data cleaning, format standardization, and transformation before ingestion.
+    *   **Python Integration**: Uses dedicated Python scripts (`convert_to_csv.py`, `impute_data.py`) for robust data cleaning, format standardisation, and transformation before ingestion.
 *   **Data Imputation**:
     *   Ability to estimate missing metric values using time-based interpolation algorithms.
-    *   Distinctly visualizes imputed data points on charts for clear differentiation from raw measurements.
+    *   Distinctly visualises imputed data points on charts for clear differentiation from raw measurements.
 *   **Advanced Visualization**:
     *   **Time Series Charts**: Dynamic line charts representing metric trends over selected time windows, highlighting imputed data.
     *   **Geospatial Mapping**: Integrated maps (Leaflet/Mapbox) to show station locations and status.
@@ -53,7 +53,7 @@ The platform is built using a modern **MERN** (MySQL/SQLite, Express, React, Nod
 1.  **Upload**: Users upload spreadsheet files via the Dashboard.
 2.  **Conversion**: The backend spawns a Python subprocess to:
     *   Iteratively convert Excel/ODS formats to standard CSV without memory bloat.
-    *   **Prioritize "Timestamp"**: Scans columns to identify the primary time axis.
+    *   **Prioritise "Timestamp"**: Scans columns to identify the primary time axis.
     *   Extract metadata (Start Date, End Date).
 3.  **Conflict Resolution**: Applies composite key and header validation logic to either prompt the user for a merge, auto-append data, or reject the upload on schema mismatch.
 4.  **Streaming Import**: The clean CSV is streamed into the database using Prisma `createMany` in batches.
@@ -61,7 +61,7 @@ The platform is built using a modern **MERN** (MySQL/SQLite, Express, React, Nod
 ### 2. Dashboard Logic
 *   **Metric Selection**: Users select a variable (e.g., Temperature, Wind Speed).
 *   **Data Imputation**: Users can opt to impute missing data, which triggers a backend script (`impute_data.py`) that applies interpolation and persists the results. The chart updates dynamically to reflect this.
-*   **Visualization**: The `CampaignChart` component queries the API, filtering by the "Timestamp" column to generate accurate time-series plots.
+*   **Visualisation**: The `CampaignChart` component queries the API, filtering by the "Timestamp" column to generate accurate time-series plots.
 
 ## 📂 Project Structure
 
@@ -81,11 +81,38 @@ Calabria Renewables/
 │   │   └── server.js   # Server Entry
 │   ├── prisma/         # Database Schema
 │   └── package.json
+├── docker-compose.yml  # Docker deployment configuration
 ├── ods_to_csv_converter.py 
 └── README.md           # This file
 ```
 
-## 🚀 Getting Started
+## 🐳 Docker Deployment (Recommended)
+
+The easiest way to run the entire platform (Frontend, Backend, and PostgreSQL database) is using Docker Compose.
+
+### Prerequisites for Docker
+*   [Docker](https://docs.docker.com/get-docker/) installed.
+*   [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+### Running with Docker
+
+1.  Make sure you are in the root directory (where `docker-compose.yml` is located).
+2.  Start the services in detached mode:
+    ```bash
+    docker-compose up --build -d
+    ```
+3.  **Access the application**:
+    *   **Frontend**: Open `http://localhost` (or the IP of your Docker host) in your browser.
+    *   **Backend API**: Running on `http://localhost:5000`.
+    *   **Database**: PostgreSQL is exposed internally to the backend, but its port is also mapped to `5432` on your host.
+
+4.  **Stopping the platform**:
+    ```bash
+    docker-compose down
+    ```
+    *Note: The database data is persisted in a Docker volume (`pgdata`), so your data won't be lost when you stop the containers.*
+
+## 🚀 Getting Started (Manual Setup)
 
 ### Prerequisites
 *   Node.js (v18+)
